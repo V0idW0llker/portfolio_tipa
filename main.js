@@ -334,3 +334,39 @@ function getAgeWord(age) {
 }
 
 updatePersonalInfo();
+
+// Кнопка "наверх"
+const scrollTopBtn = document.querySelector('.scroll-top');
+
+if (scrollTopBtn) {
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 400) {
+            scrollTopBtn.classList.add('show');
+        } else {
+            scrollTopBtn.classList.remove('show');
+        }
+    });
+
+    scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// Плавное появление блоков при прокрутке
+const revealItems = document.querySelectorAll('.info-card, .skills-card, .profile-card, .contact-link, .projects-text');
+
+if (revealItems.length > 0 && 'IntersectionObserver' in window) {
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+
+    revealItems.forEach(item => {
+        item.classList.add('reveal');
+        revealObserver.observe(item);
+    });
+}

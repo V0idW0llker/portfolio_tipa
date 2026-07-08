@@ -335,6 +335,34 @@ function getAgeWord(age) {
 
 updatePersonalInfo();
 
+// Переключатель светлой/тёмной темы
+const themeBtn = document.querySelector('.theme-btn');
+
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.body.classList.add('light-theme');
+        if (themeBtn) themeBtn.textContent = '☀️';
+    } else {
+        document.body.classList.remove('light-theme');
+        if (themeBtn) themeBtn.textContent = '🌙';
+    }
+}
+
+const savedTheme = localStorage.getItem('theme') || 'dark';
+applyTheme(savedTheme);
+
+if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+        const isLight = document.body.classList.contains('light-theme');
+        const newTheme = isLight ? 'dark' : 'light';
+        localStorage.setItem('theme', newTheme);
+        applyTheme(newTheme);
+
+        themeBtn.classList.add('animate');
+        setTimeout(() => themeBtn.classList.remove('animate'), 500);
+    });
+}
+
 // Кнопка "наверх"
 const scrollTopBtn = document.querySelector('.scroll-top');
 

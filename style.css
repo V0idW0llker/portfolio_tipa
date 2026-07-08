@@ -58,6 +58,7 @@ body{
     border-bottom: 1px solid var(--border-color);
 }
 
+
 .nav{
     display: flex;
     justify-content: space-between;
@@ -79,6 +80,7 @@ body{
     display: flex;
     list-style: none;
     gap: 32px;
+    margin-left: auto;
 }
 
 
@@ -1037,6 +1039,8 @@ main{
 @media (max-width: 768px) {
     .burger-btn {
         display: flex;
+        margin-left: auto;
+        margin-right: 56px;
     }
 
     .nav-menu {
@@ -1130,4 +1134,78 @@ main{
 .reveal.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Кнопка смены темы */
+.theme-btn {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(148, 163, 184, 0.12);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-btn:hover {
+    background: rgba(8, 145, 178, 0.2);
+    box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.12), 0 4px 18px rgba(8, 145, 178, 0.35);
+}
+
+.theme-btn.animate {
+    animation: theme-pop 0.5s ease;
+}
+
+@keyframes theme-pop {
+    0% { transform: translateY(-50%) rotate(0) scale(1); }
+    50% { transform: translateY(-50%) rotate(180deg) scale(1.35); }
+    100% { transform: translateY(-50%) rotate(360deg) scale(1); }
+}
+
+/* Светлая тема */
+body.light-theme {
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --bg-primary: #f1f5f9;
+    --bg-secondary: #e2e8f0;
+    --bg-card: #ffffff;
+    --border-color: #cbd5e1;
+}
+
+body.light-theme .page-hero {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, #cbd8e8 50%, var(--bg-secondary) 100%);
+}
+
+body.light-theme .hero {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, #dce6f2 50%, var(--bg-primary) 100%);
+}
+
+body.light-theme .hero-title {
+    background: linear-gradient(90deg, #0f172a, var(--primary-dark), #0f172a);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+body.light-theme .detail-item {
+    background: #f1f5f9;
+}
+
+body.light-theme .detail-icon {
+    background: #ffffff;
+}
+
+body.light-theme .detail-label {
+    color: #475569;
 }

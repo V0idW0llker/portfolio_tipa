@@ -268,7 +268,7 @@ if (discordBtn) {
     });
 }
 
-function showNotification(message) {
+function showNotification(message, duration = 1000) {
     const oldNotification = document.querySelector('.custom-notification');
     if (oldNotification) oldNotification.remove();
 
@@ -296,7 +296,7 @@ function showNotification(message) {
             notification.remove();
             backdrop.remove();
         }, 300);
-    }, 1000);
+    }, duration);
 }
 
 // Динамический расчёт возраста и статуса
@@ -381,7 +381,7 @@ if (scrollTopBtn) {
 }
 
 // Плавное появление блоков при прокрутке
-const revealItems = document.querySelectorAll('.info-card, .skills-card, .profile-card, .contact-link, .projects-text');
+const revealItems = document.querySelectorAll('.info-card, .skills-card, .profile-card, .contact-link, .projects-text, .timeline-item');
 
 if (revealItems.length > 0 && 'IntersectionObserver' in window) {
     const revealObserver = new IntersectionObserver((entries) => {
@@ -397,4 +397,86 @@ if (revealItems.length > 0 && 'IntersectionObserver' in window) {
         item.classList.add('reveal');
         revealObserver.observe(item);
     });
+}
+
+// Форма обратной связи
+const contactForm = document.getElementById('contact-form');
+
+if (contactForm) {
+    const nameInput = document.getElementById('form-name');
+    const emailInput = document.getElementById('form-email');
+    const messageInput = document.getElementById('form-message');
+
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        let valid = true;
+
+        if (nameInput.value.trim() === '') {
+            showFieldError(nameInput, 'Пожалуйста, введите имя');
+            valid = false;
+        } else {
+            clearFieldError(nameInput);
+        }
+
+        const emailValue = emailInput.value.trim();
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailValue === '') {
+            showFieldError(emailInput, 'Пожалуйста, введите email');
+            valid = false;
+        } else if (!emailPattern.test(emailValue)) {
+            showFieldError(emailInput, 'Некорректный email');
+            valid = false;
+        } else {
+            clearFieldError(emailInput);
+        }
+
+        const messageValue = messageInput.value.trim();
+        const repeatedChars = /(.)\1{5,}/;
+        if (messageValue.length < 10) {
+            showFieldError(messageInput, 'Сообщение слишком короткое (минимум 10 символов)');
+            valid = false;
+        } else if (repeatedChars.test(messageValue)) {
+            showFieldError(messageInput, 'Сообщение похоже на спам: уберите повторяющиеся символы, иначе оно не дойдёт');
+            valid = false;
+        } else {
+            clearFieldError(messageInput);
+        }
+
+        if (valid) {
+            const submitBtn = contactForm.querySelector('.form-submit');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Отправка...';
+
+            fetch(contactForm.action, {
+                method: 'POST',
+                body: new FormData(contactForm),
+                headers: { 'Accept': 'application/json' }
+            }).then(response => {
+                if (response.ok) {
+                    showNotification('<b>Сообщение отправлено!</b><br>Спасибо, я прочитаю его и отвечу вам на почту.<br><span style="font-size: 13px; color: var(--text-muted);">Если ответ долго не приходит — возможно, письмо попало под спам-фильтр. Продублируйте на nknve@gmail.com</span>', 5000);
+                    contactForm.reset();
+                } else {
+                    showNotification('<b>Ошибка отправки</b><br>Попробуйте ещё раз позже или напишите мне напрямую: nknve@gmail.com', 4000);
+                }
+            }).catch(() => {
+                showNotification('<b>Ошибка отправки</b><br>Проверьте интернет и попробуйте снова.', 4000);
+            }).finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Отправить';
+            });
+        }
+    });
+}
+
+function showFieldError(input, message) {
+    input.classList.add('invalid');
+    const error = input.parentElement.querySelector('.form-error');
+    if (error) error.textContent = message;
+}
+
+function clearFieldError(input) {
+    input.classList.remove('invalid');
+    const error = input.parentElement.querySelector('.form-error');
+    if (error) error.textContent = '';
 }
